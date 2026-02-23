@@ -1,0 +1,65 @@
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+  alertmanager-data: {}
+
+services:
+  prometheus:
+    container_name: Polevoy_SV-netology-prometheus
+    image: prom/prometheus:v2.36.2
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus/
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - netology_hw_net
+
+  pushgateway:
+    container_name: Polevoy_SV-netology-pushgateway
+    image: prom/pushgateway
+    restart: on-failure
+    depends_on:
+      - prometheus
+    ports:
+      - "9091:9091"
+    networks:
+      - netology_hw_net
+
+  grafana:
+    container_name: Polevoy_SV-netology-grafana
+    image: grafana/grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+      - pushgateway
+    ports:
+      - "8080:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/custom.ini:/etc/grafana/grafana.ini
+    networks:
+      - netology_hw_net
+
+  alertmanager:
+    container_name: Polevoy_SV-netology-alertmanager
+    image: prom/alertmanager:v0.26.0
+    command: --config.file=/etc/alertmanager/alertmanager.yml
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+      - alertmanager-data:/data
+    networks:
+      - netology_hw_net
+    depends_on:
+      - prometheus
+    restart: always
+
+networks:
+  netology_hw_net:
+    name: "Polevoy_SV-my-netology-hw"
+    ipam:
+      config:
+        - subnet: "10.5.0.0/16"

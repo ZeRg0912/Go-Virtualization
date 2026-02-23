@@ -1,0 +1,11 @@
+groups:
+  - name: services-availability
+    rules:
+      - alert: ServiceDown
+        expr: up{job=~"prometheus|grafana|pushgateway|alertmanager"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Сервис {{ $labels.job }} недоступен"
+          description: "Prometheus не может опросить {{ $labels.job }} на {{ $labels.instance }} более 30 секунд"

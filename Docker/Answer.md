@@ -8,6 +8,8 @@
 4. Удалите ваш контейнер с hello-world.
 docker rmi -f hello-world
 
+---
+
 ### Задание 2
 
 1. Найдите в Docker Hub образ Apache(httpd) и запустите его на 80 порту вашей ВМ.
@@ -16,6 +18,8 @@ docker rmi -f hello-world
 ![](img/image5.png)
 2. Откройте страницу http://localhost и убедитесь, что видите приветвенную страницу Apache.
 ![](img/image6.png)
+
+---
 
 ### Задание 3
 
